@@ -1,0 +1,68 @@
+:root {
+  --smoke-900: #14100C;
+  --smoke-800: #1E1813;
+  --smoke-700: #2A211B;
+  --smoke-600: #3A2F26;
+
+  --buttermilk-50: #F8F2E6;
+  --buttermilk-100: #F1E8D6;
+  --buttermilk-200: #E7DAC2;
+  --buttermilk-300: #D8C5A4;
+
+  --pecan-400: #B98D5E;
+  --pecan-500: #9A6E42;
+  --pecan-600: #7C5631;
+
+  --gold-300: #E8BC6A;
+  --gold-400: #D69A3C;
+  --gold-500: #C57F1E;
+  --gold-600: #A4660F;
+  --gold-700: #7E4E0B;
+
+  --oxblood-400: #9A3A2E;
+  --oxblood-500: #6E241C;
+  --oxblood-600: #551A14;
+  --oxblood-700: #3E120D;
+
+  --cayenne-400: #D85436;
+  --cayenne-500: #BE3A1E;
+
+  --collard-400: #4A6043;
+  --collard-500: #34472F;
+  --collard-600: #25341F;
+
+  --success: #4A6043;
+  --warning: #C57F1E;
+  --danger:  #BE3A1E;
+
+  --surface-page: var(--buttermilk-50);
+  --surface-card: #FFFFFF;
+  --surface-raised: var(--buttermilk-100);
+  --surface-sunken: var(--buttermilk-100);
+  --surface-dark: var(--smoke-900);
+  --surface-dark-raised: var(--smoke-700);
+  --surface-inverse: var(--smoke-900);
+
+  --text-strong: var(--smoke-900);
+  --text-body: #34291F;
+  --text-muted: #6F5C49;
+  --text-faint: #9C8973;
+
+  --text-on-dark: var(--buttermilk-50);
+  --text-on-dark-muted: #C7B79F;
+
+  --brand: var(--gold-500);
+  --brand-strong: var(--gold-600);
+  --brand-soft: var(--gold-300);
+  --accent: var(--oxblood-500);
+  --accent-heat: var(--cayenne-500);
+
+  --line: var(--buttermilk-200);
+  --line-strong: var(--pecan-400);
+  --line-on-dark: rgba(248, 242, 230, 0.16);
+
+  --link: var(--oxblood-500);
+  --link-hover: var(--oxblood-400);
+
+  --focus-ring: var(--gold-400);
+}

@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Roxie's Southern Bistro — Monroe, LA</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--surface-page); font-family: var(--font-sans); color: var(--text-body); -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--gold-300); color: var(--smoke-900); }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 99px; }
+  h1, h2, h3, h4, h5, h6 { margin: 0; }
+  p { margin: 0; }
+  button { font-family: inherit; }
+  img { display: block; max-width: 100%; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+// ============================================================
+// MENU DATA
+// ============================================================
+const DATA = {
+  info: {
+    name: "Roxie's Southern Bistro",
+    address: '436 Desiard Street, Monroe, LA 71201',
+    phone: '(318) 555-0100',
+    cuisine: 'American Southern',
+    tagline: 'High-quality Southern cuisine, dine-in service, and live entertainment in Monroe, Louisiana.',
+  },
+  hours: [
+    { day: 'Sun', time: '10:00a – 2:30p · 5:00p – 10:00p' },
+    { day: 'Mon', time: '10:00a – 2:30p · 5:00p – 10:00p' },
+    { day: 'Tue', time: '10:00a – 2:30p · 5:00p – 10:00p' },
+    { day: 'Wed', time: '10:00a – 2:30p · 5:00p – 10:00p' },
+    { day: 'Thu', time: '10:00a – 2:30p · 5:00p – 10:00p' },
+    { day: 'Fri', time: '10:00a – 2:30p · 5:00p – 2:00a' },
+    { day: 'Sat', time: '10:00a – 2:30p · 5:00p – 2:00a' },
+  ],
+  featured: [
+    {
+      name: 'Oxtails',
+      desc: 'Tender oxtails sitting heavy in that rich, seasoned gravy, laid over rice. This ain\u2019t light\u2026 and it ain\u2019t supposed to be.',
+      price: '27.99', badge: 'House Legend', plate: 'oxtails', img: 'images/oxtails.jpg',
+    },
+    {
+      name: 'Chicken & Waffles',
+      desc: 'Golden, crispy whole wings fried hard, served with a thick, buttery waffle that soaks up every drop. Sweet meets savory the Roxie\u2019s way.',
+      price: '15.99', badge: 'Brunch', plate: 'waffles', img: 'images/chickenwaffles.jpg',
+    },
+    {
+      name: 'Shrimp & Grits',
+      desc: 'Creamy, buttery grits loaded with plump shrimp and smoky andouille, saut\u00e9ed in a rich, savory sauce. Deep Southern flavor.',
+      price: '17.99', badge: "Chef\u2019s Pick", plate: 'grits', img: 'images/shrimpgrits.jpg',
+    },
+  ],
+  categories: [
+    {
+      id: 'soul', name: 'Soul Food Plates', overline: 'Slow cooked · no shortcuts',
+      items: [
+        { name: 'Smothered Pork Chop', desc: 'Juicy pork chops sitting in that thick, seasoned onion gravy, soaking into everything it touches. This that sit-down and don\u2019t rush kind of plate.', price: '18.99', img: 'images/smothered pork chop.png' },
+        { name: 'Smothered Turkey Wings', desc: 'Fall-off-the-bone turkey wings slow-cooked and smothered in rich, savory gravy with onions and peppers.', price: '16.99', img: 'images/smothered turkey wings.jpg' },
+        { name: 'Blackened Catfish Filets', desc: 'Seared down with that signature blackened crust, locking in flavor while keeping it tender and flaky inside. Smoky and clean.', price: '17.99', badges: ["Chef\u2019s Pick"] , img: 'images/blackened catfish filets.jpg' },
+        { name: 'Grilled Pork Chops', desc: 'Juicy. Smoky. Locked in. Grilled down with that perfect sear, holding all the flavor inside. Simple, but done right.', price: '18.99', img: 'images/grilled pork chops.png' },
+        { name: 'Lamb Chop', desc: 'Perfectly seared lamb chops with that rich, seasoned crust, sitting in a savory glaze that seals it all in.', price: '30.99', badges: ['Premium'], img: 'images/Lamb chops.jpg' },
+        { name: 'Oxtails', desc: 'Slow cooked. Fall-off-the-bone. No shortcuts. Laid over rice and soaking up every bit of flavor.', price: '27.99', oos: true, img: 'images/oxtails.jpg' },
+        { name: 'Hamburger Steak & Gravy', desc: 'Seasoned beef patty smothered in rich onion gravy, served over rice or mashed potatoes.', price: '13.99', img: 'images/Hamburger steak and gravy.png' },
+        { name: 'Red Beans & Rice w/ Sausage', desc: 'Classic Louisiana comfort — red beans slow-cooked with smoky sausage, served over white rice.', price: '12.99', img: 'images/Red beans rice with sausages.png' },
+      ],
+    },
+    {
+      id: 'baskets', name: 'Baskets & Burgers', overline: 'Crispy · seasoned · done right',
+      items: [
+        { name: 'Jumbo Roxie\u2019s Cheeseburger', desc: 'A thick, seasoned burger with that perfect sear, stacked on a soft bun and paired with hot, crispy fries.', price: '14.99' , img: 'images/jumbo roxies cheeseburger.png' },
+        { name: 'Fried Catfish Dinner', desc: 'Golden-fried catfish with a light, seasoned crust and a tender, flaky center. Simple, refined, done right.', price: '18.99' , img: 'images/fried catfish diner.png' },
+        { name: 'Chicken Wings', desc: 'Three whole wings. Real crunch. No shortcuts. Fried hard, seasoned right, and built to satisfy.', price: '17.99' , img: 'images/chicken wings.jpg' },
+        { name: 'Chicken Tender Basket', desc: 'Big, seasoned tenders fried golden and stacked on the plate with your sides. Crunch outside, tender through.', price: '11.99' , img: 'images/chicken tender basket.jpg' },
+        { name: 'Fried Shrimp', desc: 'Golden shrimp fried with that perfect crunch on the outside and tender inside. Every bite seasoned right.', price: '14.99' , img: 'images/fried shrimp.jpg' },
+        { name: 'Fried Pork Chops', desc: 'Fried hard with that perfect golden crust, locking in all the flavor. Every bite got crunch on the outside and tenderness on the inside.', price: '18.99' , img: 'images/fried pork chops.png' },
+      ],
+    },
+    {
+      id: 'brunch', name: 'Brunch', overline: 'Sweet meets savory',
+      items: [
+        { name: 'Chicken & Waffles', desc: 'Three golden, crispy whole wings with a thick, buttery waffle. Crunch, drip, and straight satisfaction.', price: '15.99', badges: ['Brunch'] , img: 'images/chicken and waffels.jpg' },
+        { name: 'Shrimp & Grits', desc: 'Creamy, buttery grits loaded with plump shrimp and smoky andouille in a rich, savory sauce.', price: '17.99' , img: 'images/shrimp and grits.jpg' },
+        { name: 'French Toast', desc: 'Thick-cut bread soaked in sweet cream batter, grilled golden and finished with powdered sugar and warm syrup.', price: '13.99' , img: 'images/french toast.jpg' },
+      ],
+    },
+    {
+      id: 'appetizers', name: 'Appetizers', overline: 'Start it right',
+      items: [
+        { name: 'Queso Loaded Cheese Fries', desc: 'Crispy golden fries smothered in rich, creamy queso and loaded with bold toppings for a savory, indulgent bite.', price: '12.99' , img: 'images/queso loaded cheese.jpg' },
+        { name: 'Signature Wings (8)', desc: 'Crispy, juicy wings tossed in your choice of bold, house-made sauces or dry rubs — packed with flavor.', price: '13.99' , img: 'images/signature wings.jpg' },
+        { name: 'Philly Steak Sliders (3)', desc: 'Tender, seasoned steak with saut\u00e9ed peppers and onions, topped with melted cheese on soft, toasted slider buns.', price: '11.99' , img: 'images/philly steak sliders.jpg' },
+      ],
+    },
+    {
+      id: 'salads', name: 'Salads', overline: 'Fresh · hearty',
+      items: [
+        { name: 'Chef Salad', desc: 'Crisp greens piled high with smoked turkey, cheddar, crispy bacon, boiled eggs, tomatoes, cucumbers, and croutons.', price: '13.99' , img: 'images/chef salad.jpg' },
+        { name: 'House Salad', desc: 'Fresh mixed greens with crisp cucumbers, juicy tomatoes, shredded cheese, red onions, and crunchy croutons.', price: '8.99' , img: 'images/house salad.jpg' },
+        { name: 'Caesar Salad', desc: 'Crisp romaine tossed in creamy Caesar dressing, topped with parmesan and crunchy croutons. Add grilled chicken or shrimp.', price: '9.99' , img: 'images/caesar salad.jpg' },
+      ],
+    },
+    {
+      id: 'pasta', name: 'Pasta', overline: 'Creamy · rich · loaded',
+      items: [
+        { name: 'Chicken Alfredo', desc: 'Pasta coated in that smooth, buttery Alfredo sauce with seasoned chicken laid right on top. Every bite heavy, cheesy.', price: '15.99' , img: 'images/chicken alfredo.png' },
+        { name: 'Shrimp Alfredo', desc: 'Smooth Alfredo sauce covering every noodle with seasoned shrimp laid heavy on top. Buttery, cheesy, full of flavor.', price: '16.99' , img: 'images/shrimop alfredo.png' },
+        { name: 'Steak Alfredo', desc: 'Smooth Alfredo coating every noodle with tender, seasoned steak laid right on top. Rich, savory, heavy hitter.', price: '23.99', oos: true , img: 'images/steak alfredo.png' },
+      ],
+    },
+    {
+      id: 'cocktails', name: 'Signature Cocktails', overline: 'After dark · live music',
+      items: [
+        { name: 'Roxies Royal Punch', desc: 'The house pour. Bold, bright, and built for a good night.', price: '13.00' },
+        { name: 'Roxies Peach Surprise', desc: 'Sweet, fruity, and hitting just right — a Roxie\u2019s original.', price: '12.00' },
+        { name: 'Honey Bourbon Lemonade', desc: 'Bourbon, honey, and fresh lemonade. Smooth with a little heat.', price: '10.00', plus: true },
+        { name: 'Southern Lavender Bliss', desc: 'Floral, smooth, and easy sipping.', price: '11.00' },
+        { name: 'Watermelon Ranch Water', desc: 'Crisp, light, and refreshing.', price: '10.00' },
+        { name: 'Margaritas', desc: 'Classic or flavored — your call.', price: '10.00', plus: true },
+      ],
+    },
+    {
+      id: 'desserts', name: 'Desserts', overline: 'Straight comfort',
+      items: [
+        { name: 'Peach Cobbler', desc: 'Juicy peaches cooked down in rich syrup with a soft, buttery crust. Every bite dripping with flavor.', price: '6.99', badges: ['Favorite'] , img: 'images/peach cobbler.png' },
+        { name: 'Banana Pudding', desc: 'Layers of pudding, bananas, and cookies, finished with whipped cream. That real, homemade feel.', price: '4.99' , img: 'images/banana pudding.png' },
+        { name: 'Cheesecake', desc: 'Smooth, melt-in-your-mouth cheesecake on a buttery crust with a sweet finish.', price: '8.99' , img: 'images/cheese cake.png' },
+        { name: 'Pound Cake Slice', desc: 'Moist cake with that melt-in-your-mouth flavor and a sweet glaze that takes it over the top.', price: '3.99' , img: 'images/pound cake slice.png' },
+      ],
+    },
+    {
+      id: 'specials', name: 'Daily Specials', overline: 'Every week · fresh deals',
+      items: [
+        { name: 'Tue — Smothered Hamburger Steak Plate', desc: 'Every Tuesday. Seasoned beef smothered in rich gravy. Real deal, discounted.', price: '12.99' , img: 'images/Tue — Smothered Hamburger Steak Plate .png' },
+        { name: 'Wed — 6 Wing Wednesday Special', desc: 'Six wings your way, every Wednesday. No excuses not to come in.', price: '12.99' , img: 'images/Wed — 6 Wing Wednesday Special .jpg' },
+        { name: 'Thu — Fried Catfish Special', desc: 'Golden, seasoned catfish every Thursday. This one don\u2019t miss.', price: '12.99' , img: 'images/Thu — Fried Catfish Special .png' },
+        { name: 'City Workers Burger Combo', desc: 'Hamburger, fries, and a drink. Built for the worker.', price: '9.99' , img: 'images/City Workers Burger Combo .png' },
+      ],
+    },
+  ],
+};
+
+// ============================================================
+// LUCIDE ICON HELPER
+// ============================================================
+function Ic({ name, size = 18, color }) {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    if (ref.current && window.lucide) {
+      window.lucide.createIcons({ nodes: [ref.current] });
+    }
+  });
+  return (
+    <i
+      ref={ref}
+      data-lucide={name}
+      style={{ width: size, height: size, display: 'inline-flex', flexShrink: 0, color }}
+    />
+  );
+}
+
+// ============================================================
+// PLATE PLACEHOLDER
+// ============================================================
+function Plate({ label, height = '100%', radius = 'var(--radius-lg)', frame = true, style = {} }) {
+  return (
+    <div
+      style={{
+        position: 'relative',
+        height,
+        width: '100%',
+        borderRadius: radius,
+        overflow: 'hidden',
+        background: 'radial-gradient(120% 120% at 30% 20%, #3A2F26 0%, #1E1813 55%, #14100C 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '0.7rem',
+        boxShadow: 'var(--shadow-md)',
+        ...style,
+      }}
+    >
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.5, mixBlendMode: 'overlay',
+        backgroundImage: 'radial-gradient(rgba(248,242,230,0.12) 0.5px, transparent 0.5px)',
+        backgroundSize: '4px 4px',
+      }} />
+      {frame && (
+        <div style={{
+          position: 'absolute', inset: 12,
+          border: '1px solid rgba(214,154,60,0.35)',
+          borderRadius: 'calc(var(--radius-lg) - 6px)',
+        }} />
+      )}
+      <span style={{ color: 'var(--gold-400)', display: 'inline-flex', position: 'relative', zIndex: 1 }}>
+        <Ic name="utensils-crossed" size={30} />
+      </span>
+      <span style={{
+        fontFamily: 'var(--font-sans)', fontSize: 11, fontWeight: 700, letterSpacing: '0.18em',
+        textTransform: 'uppercase', color: 'var(--text-on-dark-muted)', position: 'relative', zIndex: 1,
+      }}>{label}</span>
+    </div>
+  );
+}
+
+// ============================================================
+// COMPONENTS
+// ============================================================
+
+function Wordmark({ size = 'md', onDark = false, layout = 'stacked', style = {} }) {
+  const scales = {
+    sm: { script: '1.6rem', caps: '0.5rem' },
+    md: { script: '2.6rem', caps: '0.7rem' },
+    lg: { script: '4rem', caps: '0.95rem' },
+  };
+  const s = scales[size] || scales.md;
+  const scriptColor = 'var(--gold-400)';
+  const capsColor = onDark ? 'var(--buttermilk-50)' : 'var(--smoke-900)';
+
+  if (layout === 'inline') {
+    return (
+      <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: '0.5rem', ...style }}>
+        <span style={{ fontFamily: 'var(--font-script)', fontSize: s.script, lineHeight: 1, color: scriptColor }}>Roxie's</span>
+        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: s.caps, letterSpacing: 'var(--ls-wider)', textTransform: 'uppercase', color: capsColor }}>Southern Bistro</span>
+      </span>
+    );
+  }
+
+  return (
+    <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1, ...style }}>
+      <span style={{ fontFamily: 'var(--font-script)', fontSize: s.script, lineHeight: 1, color: scriptColor, marginBottom: '0.1em' }}>Roxie's</span>
+      <span style={{
+        fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: s.caps,
+        letterSpacing: 'var(--ls-widest)', textTransform: 'uppercase', color: capsColor,
+        display: 'flex', alignItems: 'center', gap: '0.6em',
+      }}>
+        <span style={{ width: '1.4em', height: 1, background: 'currentColor', opacity: 0.5 }} />
+        Southern Bistro
+        <span style={{ width: '1.4em', height: 1, background: 'currentColor', opacity: 0.5 }} />
+      </span>
+    </span>
+  );
+}
+
+function Divider({ onDark = false, width = '100%', style = {} }) {
+  const line = onDark ? 'var(--line-on-dark)' : 'var(--line-strong)';
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', width, ...style }}>
+      <span style={{ flex: 1, height: 1, background: line }} />
+      <span style={{
+        width: 8, height: 8, transform: 'rotate(45deg)', background: 'var(--gold-500)', flexShrink: 0,
+        boxShadow: `0 0 0 4px ${onDark ? 'rgba(214,154,60,0.12)' : 'rgba(197,127,30,0.10)'}`,
+      }} />
+      <span style={{ flex: 1, height: 1, background: line }} />
+    </div>
+  );
+}
+
+function Badge({ children, tone = 'gold', size = 'md', solid = false, style = {} }) {
+  const tones = {
+    gold:    { fg: 'var(--gold-700)',     bg: 'rgba(197,127,30,0.14)',  border: 'var(--gold-500)',     solidBg: 'var(--gold-500)',     solidFg: 'var(--smoke-900)' },
+    oxblood: { fg: 'var(--oxblood-500)', bg: 'rgba(110,36,28,0.10)',   border: 'var(--oxblood-400)', solidBg: 'var(--oxblood-500)', solidFg: 'var(--buttermilk-50)' },
+    cayenne: { fg: 'var(--cayenne-500)', bg: 'rgba(190,58,30,0.12)',   border: 'var(--cayenne-400)', solidBg: 'var(--cayenne-500)', solidFg: 'var(--buttermilk-50)' },
+    collard: { fg: 'var(--collard-500)', bg: 'rgba(52,71,47,0.12)',    border: 'var(--collard-400)', solidBg: 'var(--collard-500)', solidFg: 'var(--buttermilk-50)' },
+    neutral: { fg: 'var(--text-muted)',  bg: 'rgba(20,16,12,0.06)',    border: 'var(--line-strong)', solidBg: 'var(--smoke-700)',   solidFg: 'var(--buttermilk-50)' },
+  };
+  const t = tones[tone] || tones.gold;
+  const pad = size === 'sm' ? '0.2rem 0.5rem' : '0.3rem 0.7rem';
+  const fz = size === 'sm' ? '0.65rem' : 'var(--fs-xs)';
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+      fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: fz,
+      letterSpacing: 'var(--ls-wider)', textTransform: 'uppercase', lineHeight: 1,
+      padding: pad, borderRadius: 'var(--radius-sm)',
+      color: solid ? t.solidFg : t.fg,
+      background: solid ? t.solidBg : t.bg,
+      border: `1px solid ${solid ? 'transparent' : t.border}`,
+      ...style,
+    }}>
+      {children}
+    </span>
+  );
+}
+
+function Tag({ children, selected = false, onClick, style = {} }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-pressed={selected}
+      style={{
+        fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: 'var(--fs-sm)',
+        letterSpacing: 'var(--ls-wide)', textTransform: 'uppercase',
+        padding: '0.5rem 1.1rem', borderRadius: 'var(--radius-pill)',
+        cursor: 'pointer', whiteSpace: 'nowrap',
+        transition: 'all var(--dur-fast) var(--ease-out)',
+        color: selected ? 'var(--smoke-900)' : 'var(--text-muted)',
+        background: selected ? 'var(--gold-500)' : 'transparent',
+        border: `1.5px solid ${selected ? 'var(--gold-600)' : 'var(--line-strong)'}`,
+        boxShadow: selected ? 'var(--shadow-sm)' : 'none',
+        ...style,
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function Button({ children, variant = 'primary', size = 'md', full = false, disabled = false, iconLeft = null, iconRight = null, style = {}, ...rest }) {
+  const sizes = {
+    sm: { padding: '0.5rem 0.9rem', fontSize: 'var(--fs-sm)', gap: '0.4rem' },
+    md: { padding: '0.75rem 1.4rem', fontSize: 'var(--fs-base)', gap: '0.5rem' },
+    lg: { padding: '1rem 2rem', fontSize: 'var(--fs-md)', gap: '0.6rem' },
+  };
+  const variants = {
+    primary: { background: 'var(--gold-500)', color: 'var(--smoke-900)', border: '1px solid var(--gold-600)', boxShadow: 'var(--shadow-gold)' },
+    accent:  { background: 'var(--oxblood-500)', color: 'var(--buttermilk-50)', border: '1px solid var(--oxblood-600)', boxShadow: 'var(--shadow-sm)' },
+    dark:    { background: 'var(--smoke-900)', color: 'var(--buttermilk-50)', border: '1px solid var(--smoke-700)', boxShadow: 'var(--shadow-sm)' },
+    outline: { background: 'transparent', color: 'var(--smoke-900)', border: '2px solid var(--smoke-900)', boxShadow: 'none' },
+    ghost:   { background: 'transparent', color: 'var(--oxblood-500)', border: '2px solid transparent', boxShadow: 'none' },
+  };
+  const sz = sizes[size] || sizes.md;
+  const vr = variants[variant] || variants.primary;
+  return (
+    <button
+      disabled={disabled}
+      style={{
+        display: full ? 'flex' : 'inline-flex',
+        width: full ? '100%' : 'auto',
+        alignItems: 'center', justifyContent: 'center',
+        gap: sz.gap, fontFamily: 'var(--font-sans)', fontWeight: 700,
+        fontSize: sz.fontSize, letterSpacing: 'var(--ls-wide)', textTransform: 'uppercase',
+        padding: sz.padding, borderRadius: 'var(--radius-sm)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.45 : 1,
+        transition: 'transform var(--dur-fast) var(--ease-out), filter var(--dur-fast) var(--ease-out)',
+        ...vr, ...style,
+      }}
+      onMouseDown={(e) => !disabled && (e.currentTarget.style.transform = 'translateY(1px) scale(0.99)')}
+      onMouseUp={(e) => (e.currentTarget.style.transform = 'none')}
+      onMouseLeave={(e) => (e.currentTarget.style.transform = 'none')}
+      {...rest}
+    >
+      {iconLeft}
+      {children}
+      {iconRight}
+    </button>
+  );
+}
+
+function IconButton({ children, variant = 'solid', size = 'md', round = true, disabled = false, ariaLabel, style = {}, ...rest }) {
+  const dims = { sm: 32, md: 40, lg: 48 };
+  const d = dims[size] || 40;
+  const variants = {
+    solid:   { background: 'var(--gold-500)', color: 'var(--smoke-900)', border: '1px solid var(--gold-600)' },
+    dark:    { background: 'var(--smoke-900)', color: 'var(--buttermilk-50)', border: '1px solid var(--smoke-700)' },
+    outline: { background: 'transparent', color: 'var(--smoke-900)', border: '1.5px solid var(--line-strong)' },
+    ghost:   { background: 'transparent', color: 'var(--text-body)', border: '1px solid transparent' },
+  };
+  return (
+    <button
+      aria-label={ariaLabel}
+      disabled={disabled}
+      style={{
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        width: d, height: d,
+        borderRadius: round ? 'var(--radius-circle)' : 'var(--radius-sm)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.45 : 1,
+        transition: 'transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out)',
+        ...(variants[variant] || variants.solid), ...style,
+      }}
+      onMouseDown={(e) => !disabled && (e.currentTarget.style.transform = 'scale(0.92)')}
+      onMouseUp={(e) => (e.currentTarget.style.transform = 'none')}
+      onMouseLeave={(e) => (e.currentTarget.style.transform = 'none')}
+      {...rest}
+    >
+      {children}
+    </button>
+  );
+}
+
+function PriceTag({ amount, plus = false, size = 'md', muted = false, struck = false, style = {} }) {
+  const sizes = { sm: 'var(--fs-base)', md: 'var(--fs-lg)', lg: 'var(--fs-xl)' };
+  return (
+    <span style={{
+      fontFamily: 'var(--font-display)', fontWeight: 700,
+      fontSize: sizes[size] || sizes.md, lineHeight: 1,
+      color: muted ? 'var(--text-muted)' : 'var(--oxblood-500)',
+      textDecoration: struck ? 'line-through' : 'none',
+      whiteSpace: 'nowrap', fontFeatureSettings: '"tnum" 1',
+      ...style,
+    }}>
+      <span style={{ fontSize: '0.7em', verticalAlign: 'top', marginRight: '0.05em' }}>$</span>
+      {amount}
+      {plus && <span style={{ color: 'var(--gold-600)' }}>+</span>}
+    </span>
+  );
+}
+
+function Input({ label, icon = null, type = 'text', invalid = false, hint, style = {}, id, ...rest }) {
+  const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
+  const [focused, setFocused] = React.useState(false);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
+      {label && (
+        <label htmlFor={inputId} style={{
+          fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-xs)', fontWeight: 700,
+          letterSpacing: 'var(--ls-wider)', textTransform: 'uppercase', color: 'var(--text-muted)',
+        }}>
+          {label}
+        </label>
+      )}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '0.6rem',
+        padding: '0.7rem 0.9rem', background: 'var(--surface-card)',
+        border: `1.5px solid ${invalid ? 'var(--cayenne-500)' : focused ? 'var(--gold-500)' : 'var(--line-strong)'}`,
+        borderRadius: 'var(--radius-sm)',
+        boxShadow: focused ? 'var(--ring)' : 'none',
+        transition: 'border var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)',
+        ...style,
+      }}>
+        {icon && <span style={{ display: 'inline-flex', color: 'var(--text-muted)', flexShrink: 0 }}>{icon}</span>}
+        <input
+          id={inputId} type={type}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-base)', color: 'var(--text-strong)' }}
+          {...rest}
+        />
+      </div>
+      {hint && <span style={{ fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-xs)', color: invalid ? 'var(--cayenne-500)' : 'var(--text-muted)' }}>{hint}</span>}
+    </div>
+  );
+}
+
+function QuantityStepper({ value = 1, min = 1, max = 99, onChange = () => {}, size = 'md', style = {} }) {
+  const dec = () => onChange(Math.max(min, value - 1));
+  const inc = () => onChange(Math.min(max, value + 1));
+  const d = size === 'sm' ? 30 : 38;
+  const btn = (disabled) => ({
+    width: d, height: d, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    border: 'none', background: 'transparent', cursor: disabled ? 'not-allowed' : 'pointer',
+    color: disabled ? 'var(--text-faint)' : 'var(--smoke-900)', fontSize: '1.2rem', fontWeight: 700,
+    transition: 'background var(--dur-fast) var(--ease-out)',
+  });
+  return (
+    <div style={{
+      display: 'inline-flex', alignItems: 'center',
+      border: '1.5px solid var(--line-strong)', borderRadius: 'var(--radius-pill)',
+      background: 'var(--surface-card)', ...style,
+    }}>
+      <button aria-label="Decrease" style={btn(value <= min)} onClick={dec} disabled={value <= min}>&minus;</button>
+      <span style={{
+        minWidth: d, textAlign: 'center',
+        fontFamily: 'var(--font-display)', fontWeight: 700,
+        fontSize: 'var(--fs-md)', color: 'var(--text-strong)',
+        fontFeatureSettings: '"tnum" 1',
+      }}>{value}</span>
+      <button aria-label="Increase" style={btn(value >= max)} onClick={inc} disabled={value >= max}>+</button>
+    </div>
+  );
+}
+
+function SectionHeader({ overline, title, script = null, align = 'left', onDark = false, style = {} }) {
+  const centered = align === 'center';
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column',
+      alignItems: centered ? 'center' : 'flex-start',
+      textAlign: centered ? 'center' : 'left',
+      gap: '0.5rem', ...style,
+    }}>
+      {overline && (
+        <span style={{
+          fontFamily: 'var(--font-sans)', fontSize: 'var(--overline-size)',
+          fontWeight: 'var(--overline-weight)', letterSpacing: 'var(--overline-tracking)',
+          textTransform: 'uppercase', color: 'var(--gold-500)',
+        }}>
+          {overline}
+        </span>
+      )}
+      {script && (
+        <span style={{
+          fontFamily: 'var(--font-script)', fontSize: 'var(--fs-script)', lineHeight: 1,
+          color: onDark ? 'var(--gold-300)' : 'var(--oxblood-500)', marginBottom: '-0.4rem',
+        }}>
+          {script}
+        </span>
+      )}
+      <h2 style={{
+        margin: 0, fontFamily: 'var(--font-display)', fontWeight: 900,
+        fontSize: 'var(--fs-display-md)', lineHeight: 'var(--lh-tight)',
+        letterSpacing: 'var(--ls-tight)',
+        color: onDark ? 'var(--buttermilk-50)' : 'var(--text-strong)',
+      }}>
+        {title}
+      </h2>
+      <span style={{
+        display: 'block', width: 64, height: 3, marginTop: '0.5rem',
+        background: 'var(--gold-500)', borderRadius: 'var(--radius-pill)',
+      }} />
+    </div>
+  );
+}
+
+function MenuItemCard({ name, description, price, pricePlus = false, badges = [], outOfStock = false, onAdd = null, img = null, style = {} }) {
+  return (
+    <div style={{
+      display: 'flex', gap: 'var(--space-5)', padding: 'var(--space-5) 0',
+      borderBottom: '1px solid var(--line)', alignItems: 'flex-start',
+      opacity: outOfStock ? 0.62 : 1, ...style,
+    }}>
+      <div style={{
+        width: 80, height: 80, flexShrink: 0, borderRadius: 'var(--radius-md)', overflow: 'hidden',
+        background: 'radial-gradient(120% 120% at 30% 20%, #3A2F26 0%, #1E1813 55%, #14100C 100%)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        border: '1px solid rgba(214,154,60,0.2)',
+      }}>
+        {img
+          ? <img src={img} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          : <span style={{ color: 'rgba(214,154,60,0.5)', display: 'inline-flex' }}><Ic name="utensils-crossed" size={22} /></span>}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--space-3)', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
+          <h3 style={{
+            margin: 0, fontFamily: 'var(--font-display)', fontWeight: 700,
+            fontSize: 'var(--fs-lg)', lineHeight: 1.1, color: 'var(--text-strong)',
+          }}>
+            {name}
+          </h3>
+          {(outOfStock ? [...badges, 'Out of Stock'] : badges).map((b, i) => {
+            const oos = b === 'Out of Stock';
+            return <Badge key={i} tone={oos ? 'neutral' : 'gold'} size="sm" solid={!oos}>{b}</Badge>;
+          })}
+        </div>
+        {description && (
+          <p style={{
+            margin: 0, fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)',
+            lineHeight: 'var(--lh-normal)', color: 'var(--text-muted)', maxWidth: '52ch',
+          }}>
+            {description}
+          </p>
+        )}
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 'var(--space-3)', flexShrink: 0 }}>
+        <PriceTag amount={price} plus={pricePlus} muted={outOfStock} />
+        {onAdd && !outOfStock && (
+          <button
+            aria-label={`Add ${name}`}
+            onClick={onAdd}
+            style={{
+              width: 34, height: 34, borderRadius: 'var(--radius-circle)',
+              border: '1.5px solid var(--gold-600)', background: 'var(--gold-500)',
+              color: 'var(--smoke-900)', fontSize: '1.2rem', fontWeight: 700,
+              cursor: 'pointer', lineHeight: 1,
+              transition: 'transform var(--dur-fast) var(--ease-out)',
+            }}
+            onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.9)')}
+            onMouseUp={(e) => (e.currentTarget.style.transform = 'none')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'none')}
+          >
+            +
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// HEADER
+// ============================================================
+function Header({ active, onNav, cartCount = 0 }) {
+  const links = [
+    { id: 'home', label: 'Home' },
+    { id: 'menu', label: 'Menu' },
+    { id: 'reserve', label: 'Reserve' },
+    { id: 'story', label: 'Our Story' },
+  ];
+  return (
+    <header style={{
+      position: 'sticky', top: 0, zIndex: 20,
+      background: 'rgba(20,16,12,0.92)', backdropFilter: 'blur(10px)',
+      borderBottom: '1px solid var(--line-on-dark)',
+    }}>
+      <div style={{
+        maxWidth: 'var(--container-max)', margin: '0 auto',
+        padding: '0.85rem var(--gutter)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem',
+      }}>
+        <button onClick={() => onNav('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+          <Wordmark size="sm" layout="inline" onDark />
+        </button>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '1.8rem' }}>
+          {links.map((l) => (
+            <button key={l.id} onClick={() => onNav(l.id)} style={{
+              background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0',
+              fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', fontWeight: 700,
+              letterSpacing: 'var(--ls-wide)', textTransform: 'uppercase',
+              color: active === l.id ? 'var(--gold-400)' : 'var(--buttermilk-50)',
+              borderBottom: active === l.id ? '2px solid var(--gold-400)' : '2px solid transparent',
+              transition: 'color var(--dur-fast) var(--ease-out)',
+            }}>
+              {l.label}
+            </button>
+          ))}
+        </nav>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+          <IconButton ariaLabel="Cart" variant="solid" onClick={() => onNav('menu')}>
+            <Ic name="shopping-bag" size={18} />
+          </IconButton>
+          {cartCount > 0 && (
+            <span style={{
+              fontFamily: 'var(--font-display)', fontWeight: 700,
+              color: 'var(--gold-400)', fontSize: 'var(--fs-md)',
+              minWidth: 18, fontVariantNumeric: 'tabular-nums',
+            }}>{cartCount}</span>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+// ============================================================
+// FOOTER
+// ============================================================
+function Footer() {
+  const { name, address } = DATA.info;
+  return (
+    <footer style={{ background: 'var(--smoke-900)', color: 'var(--text-on-dark)', padding: 'var(--space-9) var(--gutter) var(--space-6)' }}>
+      <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-6)' }}>
+          <Wordmark size="md" onDark />
+        </div>
+        <Divider onDark />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-6)', justifyContent: 'space-between', marginTop: 'var(--space-6)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-on-dark-muted)', fontSize: 'var(--fs-sm)' }}>
+            <Ic name="map-pin" size={16} color="var(--gold-400)" />{address}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-on-dark-muted)', fontSize: 'var(--fs-sm)' }}>
+            <Ic name="utensils" size={16} color="var(--gold-400)" />Commission-free ordering · direct to the kitchen
+          </div>
+          <div style={{ display: 'flex', gap: '0.8rem' }}>
+            <IconButton ariaLabel="Facebook" variant="outline"><Ic name="facebook" size={16} /></IconButton>
+            <IconButton ariaLabel="Instagram" variant="outline"><Ic name="instagram" size={16} /></IconButton>
+            <IconButton ariaLabel="Call" variant="outline"><Ic name="phone" size={16} /></IconButton>
+          </div>
+        </div>
+        <p style={{ marginTop: 'var(--space-7)', color: 'var(--text-on-dark-muted)', fontSize: 'var(--fs-xs)', opacity: 0.7 }}>
+          © {new Date().getFullYear()} {name} · Monroe, Louisiana
+        </p>
+      </div>
+    </footer>
+  );
+}
+
+// ============================================================
+// HOME SCREEN
+// ============================================================
+function Home({ onNav, onAdd }) {
+  const D = DATA;
+  return (
+    <div style={{ background: 'var(--surface-page)' }}>
+      {/* HERO */}
+      <section style={{ position: 'relative', background: 'var(--smoke-900)', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0 }}>
+          <Plate label="Hero — dining room / signature plate" radius="0" frame={false} />
+        </div>
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(180deg, rgba(20,16,12,0.55) 0%, rgba(20,16,12,0.78) 70%, rgba(20,16,12,0.95) 100%)',
+        }} />
+        <div style={{
+          position: 'relative', maxWidth: 'var(--container-max)', margin: '0 auto',
+          padding: 'var(--space-10) var(--gutter)', textAlign: 'center',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-5)',
+        }}>
+          <span style={{
+            fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-xs)', fontWeight: 700,
+            letterSpacing: 'var(--ls-widest)', textTransform: 'uppercase', color: 'var(--gold-400)',
+          }}>
+            American Southern · Monroe, LA
+          </span>
+          <span style={{ fontFamily: 'var(--font-script)', fontSize: 'clamp(2rem,5vw,3.5rem)', color: 'var(--gold-300)', lineHeight: 1, marginBottom: '-1rem' }}>
+            Welcome to
+          </span>
+          <h1 style={{
+            margin: 0, fontFamily: 'var(--font-display)', fontWeight: 900,
+            fontSize: 'var(--fs-display-xl)', lineHeight: 0.98, letterSpacing: '-0.02em',
+            color: 'var(--buttermilk-50)', maxWidth: '14ch',
+          }}>
+            Southern Soul, Served Right.
+          </h1>
+          <p style={{
+            margin: 0, fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-md)',
+            color: 'var(--text-on-dark-muted)', maxWidth: '46ch', lineHeight: 'var(--lh-normal)',
+          }}>
+            Slow-cooked plates, fall-off-the-bone classics, and live entertainment after dark. No shortcuts — never have been.
+          </p>
+          <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', justifyContent: 'center', marginTop: 'var(--space-2)' }}>
+            <Button variant="primary" size="lg" iconRight={<Ic name="arrow-right" size={18} />} onClick={() => onNav('menu')}>
+              Order Pickup
+            </Button>
+            <Button variant="outline" size="lg" style={{ color: 'var(--buttermilk-50)', borderColor: 'var(--buttermilk-50)' }} onClick={() => onNav('reserve')}>
+              Reserve a Table
+            </Button>
+          </div>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
+            marginTop: 'var(--space-3)', padding: '0.5rem 1.1rem',
+            borderRadius: 'var(--radius-pill)',
+            background: 'rgba(248,242,230,0.08)', border: '1px solid var(--line-on-dark)',
+          }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--gold-400)', boxShadow: '0 0 0 4px rgba(214,154,60,0.2)' }} />
+            <span style={{ fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', color: 'var(--buttermilk-50)' }}>
+              Open now · Pickup in 20–25 min
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* VALUE STRIP */}
+      <section style={{ background: 'var(--oxblood-500)', color: 'var(--buttermilk-50)' }}>
+        <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: 'var(--space-5) var(--gutter)', display: 'flex', gap: 'var(--space-6)', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+          {[
+            ['hand-coins', 'Commission-free ordering'],
+            ['music', 'Live entertainment'],
+            ['utensils', 'Full-service dine-in'],
+            ['clock', 'Late nights Fri & Sat'],
+          ].map(([ic, t]) => (
+            <div key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.55rem', fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', fontWeight: 600, letterSpacing: 'var(--ls-wide)' }}>
+              <Ic name={ic} size={17} color="var(--gold-300)" />{t}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FEATURED */}
+      <section style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: 'var(--section-y) var(--gutter)' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-7)' }}>
+          <SectionHeader align="center" overline="Straight from the kitchen" script="House favorites" title="The Plates We're Known For" />
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-5)' }}>
+          {D.featured.map((f) => (
+            <article key={f.name} style={{
+              background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)',
+              overflow: 'hidden', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--line)',
+              display: 'flex', flexDirection: 'column',
+            }}>
+              <div style={{ height: 200, overflow: 'hidden' }}>
+                {f.img
+                  ? <img src={f.img} alt={f.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <Plate label={f.plate} />}
+              </div>
+              <div style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: '0.6rem', flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem' }}>
+                  <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'var(--fs-lg)', color: 'var(--text-strong)', lineHeight: 1.1 }}>
+                    {f.name}
+                  </h3>
+                  <Badge tone="gold" size="sm">{f.badge}</Badge>
+                </div>
+                <p style={{ margin: 0, fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', lineHeight: 'var(--lh-normal)', color: 'var(--text-muted)', flex: 1 }}>
+                  {f.desc}
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.3rem' }}>
+                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--fs-lg)', color: 'var(--oxblood-500)' }}>${f.price}</span>
+                  <Button variant="ghost" size="sm" iconRight={<Ic name="plus" size={15} />} onClick={() => onAdd(f)}>Add</Button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 'var(--space-7)' }}>
+          <Button variant="dark" size="lg" iconRight={<Ic name="arrow-right" size={18} />} onClick={() => onNav('menu')}>
+            See the Full Menu
+          </Button>
+        </div>
+      </section>
+
+      {/* STORY */}
+      <section style={{ background: 'var(--smoke-900)', color: 'var(--text-on-dark)' }}>
+        <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: 'var(--section-y) var(--gutter)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-8)', alignItems: 'center' }}>
+          <div style={{ height: 420, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+            <img src="images/Roxies front.jpeg" alt="Roxie's Southern Bistro" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+            <SectionHeader onDark overline="Our table" script="Pull up a chair" title="Real Food, Real Heat, Real Folks." />
+            <p style={{ margin: 0, fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-md)', lineHeight: 'var(--lh-relaxed)', color: 'var(--text-on-dark-muted)', maxWidth: '46ch' }}>
+              Roxie's is a full-service Southern bistro in the heart of Monroe — comfort food cooked low and slow, poured-strong cocktails, and live entertainment that keeps the night going. Every plate sits heavy in the best way.
+            </p>
+            <Divider onDark width="180px" style={{ margin: '0.4rem 0' }} />
+            <div style={{ display: 'flex', gap: 'var(--space-7)' }}>
+              {[['40+', 'Plates & baskets'], ['Til 2a', 'Fri & Sat nights'], ['$0', 'Ordering fees']].map(([n, l]) => (
+                <div key={l}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'var(--fs-xl)', color: 'var(--gold-400)' }}>{n}</div>
+                  <div style={{ fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-xs)', textTransform: 'uppercase', letterSpacing: 'var(--ls-wide)', color: 'var(--text-on-dark-muted)' }}>{l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HOURS & LOCATION */}
+      <section style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: 'var(--section-y) var(--gutter)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-8)' }}>
+        <div>
+          <SectionHeader overline="Come see us" title="Hours" />
+          <div style={{ marginTop: 'var(--space-5)' }}>
+            {D.hours.map((h) => (
+              <div key={h.day} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.7rem 0', borderBottom: '1px solid var(--line)', fontFamily: 'var(--font-sans)' }}>
+                <span style={{ fontWeight: 700, color: 'var(--text-strong)', textTransform: 'uppercase', letterSpacing: 'var(--ls-wide)', fontSize: 'var(--fs-sm)' }}>{h.day}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: 'var(--fs-sm)', fontVariantNumeric: 'tabular-nums' }}>{h.time}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <SectionHeader overline="436 Desiard Street" title="Find the Bistro" />
+          <div style={{ marginTop: 'var(--space-5)', height: 280, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+            <iframe
+              src="https://maps.google.com/maps?q=436+Desiard+Street%2C+Monroe%2C+LA+71201&output=embed"
+              width="100%" height="280"
+              style={{ border: 0, display: 'block' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Roxie's Southern Bistro location"
+            />
+          </div>
+          <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-5)' }}>
+            <Button variant="primary" iconLeft={<Ic name="navigation" size={16} />}>Directions</Button>
+            <Button variant="outline" iconLeft={<Ic name="phone" size={16} />}>Call</Button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ============================================================
+// MENU PAGE
+// ============================================================
+function MenuPage({ cart, onAdd }) {
+  const D = DATA;
+  const [active, setActive] = React.useState(D.categories[0].id);
+  const cartItems = Object.values(cart);
+  const subtotal = cartItems.reduce((s, c) => s + parseFloat(c.price) * c.qty, 0);
+
+  return (
+    <div style={{ background: 'var(--surface-page)' }}>
+      {/* Page head */}
+      <section style={{ background: 'var(--smoke-900)', color: 'var(--text-on-dark)', padding: 'var(--space-8) var(--gutter) var(--space-7)' }}>
+        <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <span style={{ fontFamily: 'var(--font-script)', fontSize: 'clamp(1.8rem,4vw,3rem)', color: 'var(--gold-300)', lineHeight: 1 }}>The Roxie's</span>
+          <h1 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'var(--fs-display-lg)', letterSpacing: '-0.02em', color: 'var(--buttermilk-50)', lineHeight: 1 }}>Menu</h1>
+          <p style={{ margin: 0, color: 'var(--text-on-dark-muted)', fontSize: 'var(--fs-sm)' }}>Pickup from 436 Desiard Street · ASAP, 20–25 min</p>
+        </div>
+      </section>
+
+      {/* Category nav */}
+      <div style={{ position: 'sticky', top: 61, zIndex: 10, background: 'var(--buttermilk-100)', borderBottom: '1px solid var(--line)' }}>
+        <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0.8rem var(--gutter)', display: 'flex', gap: '0.6rem', overflowX: 'auto' }}>
+          {D.categories.map((c) => (
+            <Tag key={c.id} selected={active === c.id} onClick={() => {
+              setActive(c.id);
+              const el = document.getElementById('cat-' + c.id);
+              if (el) window.scrollTo({ top: el.offsetTop - 130, behavior: 'smooth' });
+            }}>{c.name}</Tag>
+          ))}
+        </div>
+      </div>
+
+      {/* Body: menu + order rail */}
+      <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: 'var(--section-y) var(--gutter)', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: 'var(--space-8)', alignItems: 'start' }}>
+        <div>
+          {D.categories.map((c) => (
+            <section key={c.id} id={'cat-' + c.id} style={{ marginBottom: 'var(--space-8)' }}>
+              <SectionHeader overline={c.overline} title={c.name} style={{ marginBottom: 'var(--space-3)' }} />
+              <div>
+                {c.items.map((it) => (
+                  <MenuItemCard
+                    key={it.name}
+                    name={it.name}
+                    description={it.desc}
+                    price={it.price}
+                    pricePlus={it.plus}
+                    badges={it.badges || []}
+                    outOfStock={it.oos}
+                    img={it.img}
+                    onAdd={() => onAdd(it)}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        {/* Order summary */}
+        <aside style={{ position: 'sticky', top: 130, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--line)', boxShadow: 'var(--shadow-md)', overflow: 'hidden' }}>
+          <div style={{ background: 'var(--smoke-900)', padding: 'var(--space-4) var(--space-5)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <Ic name="shopping-bag" size={18} color="var(--gold-400)" />
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--fs-md)', color: 'var(--buttermilk-50)' }}>Your Order</span>
+          </div>
+          <div style={{ padding: 'var(--space-5)' }}>
+            {cartItems.length === 0 ? (
+              <p style={{ margin: '0.5rem 0', color: 'var(--text-muted)', fontSize: 'var(--fs-sm)', textAlign: 'center' }}>
+                Your plate's empty. Add something good.
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+                {cartItems.map((c) => (
+                  <div key={c.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem' }}>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: 'var(--fs-sm)', color: 'var(--text-strong)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</div>
+                      <QuantityStepper size="sm" value={c.qty} min={0} onChange={(v) => onAdd(c, v - c.qty)} style={{ marginTop: 4 }} />
+                    </div>
+                    <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--oxblood-500)', whiteSpace: 'nowrap' }}>
+                      ${(parseFloat(c.price) * c.qty).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+                <Divider />
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-sans)' }}>
+                  <span style={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: 'var(--ls-wide)', fontSize: 'var(--fs-sm)' }}>Subtotal</span>
+                  <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'var(--fs-lg)', color: 'var(--text-strong)' }}>${subtotal.toFixed(2)}</span>
+                </div>
+              </div>
+            )}
+            <Button variant="primary" full size="lg" style={{ marginTop: 'var(--space-5)' }} disabled={cartItems.length === 0} iconRight={<Ic name="arrow-right" size={18} />}>
+              Checkout
+            </Button>
+            <p style={{ margin: 'var(--space-3) 0 0', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--fs-xs)' }}>
+              Commission-free · goes straight to Roxie's
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// RESERVATIONS
+// ============================================================
+function Reservations() {
+  const [party, setParty] = React.useState(4);
+  const [time, setTime] = React.useState('7:30 PM');
+  const [done, setDone] = React.useState(false);
+  const times = ['5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM', '9:00 PM'];
+
+  return (
+    <div style={{ background: 'var(--surface-page)' }}>
+      <section style={{ maxWidth: 'var(--container-narrow)', margin: '0 auto', padding: 'var(--section-y) var(--gutter)' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-6)' }}>
+          <SectionHeader align="center" overline="Dine-in · live entertainment" script="Save your seat" title="Reserve a Table" />
+        </div>
+        <div style={{ background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--line)', boxShadow: 'var(--shadow-md)', overflow: 'hidden' }}>
+          <div style={{ height: 150 }}>
+            <Plate label="Dining room · supper club" radius="0" frame={false} />
+          </div>
+          {done ? (
+            <div style={{ padding: 'var(--space-8) var(--space-6)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-3)' }}>
+              <span style={{ color: 'var(--collard-500)' }}><Ic name="circle-check-big" size={44} /></span>
+              <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'var(--fs-xl)', color: 'var(--text-strong)' }}>
+                Table's Booked
+              </h3>
+              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 'var(--fs-base)' }}>
+                Party of {party} · tonight at {time}. We'll see you at 436 Desiard.
+              </p>
+              <Button variant="outline" style={{ marginTop: 'var(--space-3)' }} onClick={() => setDone(false)}>
+                Edit reservation
+              </Button>
+            </div>
+          ) : (
+            <div style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
+              <div>
+                <label style={{ fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-xs)', fontWeight: 700, letterSpacing: 'var(--ls-wider)', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: '0.6rem' }}>Party Size</label>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {[2, 3, 4, 5, 6, 8].map((p) => (
+                    <Tag key={p} selected={party === p} onClick={() => setParty(p)}>{p === 8 ? '8+' : p}</Tag>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+                <Input label="Date" defaultValue="Today, Jun 16" icon={<Ic name="calendar" size={16} />} />
+                <Input label="Name" placeholder="Your name" icon={<Ic name="user" size={16} />} />
+              </div>
+              <div>
+                <label style={{ fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-xs)', fontWeight: 700, letterSpacing: 'var(--ls-wider)', textTransform: 'uppercase', color: 'var(--text-muted)', display: 'block', marginBottom: '0.6rem' }}>Time</label>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {times.map((t) => (
+                    <Tag key={t} selected={time === t} onClick={() => setTime(t)}>{t}</Tag>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+                <Input label="Phone" placeholder="(318) 555-0142" icon={<Ic name="phone" size={16} />} />
+                <Input label="Email" placeholder="you@email.com" icon={<Ic name="mail" size={16} />} />
+              </div>
+              <Input label="Special Requests" placeholder="Birthday, seating near the stage, allergies…" />
+              <Divider />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-muted)', fontSize: 'var(--fs-sm)' }}>
+                  <Badge tone="collard" size="sm">Live music</Badge> Fri & Sat we go till 2 AM
+                </div>
+                <Button variant="primary" size="lg" iconRight={<Ic name="arrow-right" size={18} />} onClick={() => setDone(true)}>
+                  Book Table
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ============================================================
+// OUR STORY PAGE
+// ============================================================
+function OurStory({ onNav }) {
+  return (
+    <div style={{ background: 'var(--surface-page)' }}>
+      {/* Hero */}
+      <section style={{ position: 'relative', background: 'var(--smoke-900)', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0 }}>
+          <img src="images/Roxies front.jpeg" alt="Roxie's Southern Bistro" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.55 }} />
+        </div>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(20,16,12,0.45) 0%, rgba(20,16,12,0.8) 70%, rgba(20,16,12,1) 100%)' }} />
+        <div style={{
+          position: 'relative', maxWidth: 'var(--container-max)', margin: '0 auto',
+          padding: 'var(--space-10) var(--gutter)', textAlign: 'center',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-4)',
+        }}>
+          <span style={{ fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-xs)', fontWeight: 700, letterSpacing: 'var(--ls-widest)', textTransform: 'uppercase', color: 'var(--gold-400)' }}>
+            Monroe, Louisiana
+          </span>
+          <span style={{ fontFamily: 'var(--font-script)', fontSize: 'clamp(2rem,5vw,3.5rem)', color: 'var(--gold-300)', lineHeight: 1 }}>
+            Our table
+          </span>
+          <h1 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'var(--fs-display-xl)', lineHeight: 0.98, letterSpacing: '-0.02em', color: 'var(--buttermilk-50)', maxWidth: '16ch' }}>
+            Real Food. Real Heat. Real Folks.
+          </h1>
+        </div>
+      </section>
+
+      {/* Story body */}
+      <section style={{ maxWidth: 'var(--container-narrow)', margin: '0 auto', padding: 'var(--section-y) var(--gutter)', display: 'flex', flexDirection: 'column', gap: 'var(--space-7)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          <SectionHeader overline="Where it started" script="Pull up a chair" title="Built on Soul" />
+          <p style={{ margin: 0, fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-md)', lineHeight: 'var(--lh-relaxed)', color: 'var(--text-muted)' }}>
+            Roxie's Southern Bistro was born in the heart of Monroe, Louisiana — a city that knows its food and doesn't settle for less. From day one, the mission was simple: cook real Southern food the way it was meant to be cooked. Low and slow. No shortcuts. No compromises.
+          </p>
+          <p style={{ margin: 0, fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-md)', lineHeight: 'var(--lh-relaxed)', color: 'var(--text-muted)' }}>
+            Every plate that leaves our kitchen carries that same standard — whether it's the fall-off-the-bone oxtails soaking in rich gravy, the perfectly blackened catfish, or the crispy wings that hit just right. This is the food that brings people together, and that's exactly what Roxie's is built on.
+          </p>
+        </div>
+
+        <Divider />
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-5)' }}>
+          {[
+            { icon: 'utensils', title: 'Full-Service Dining', body: 'Dine-in with full table service, a complete menu, and an atmosphere that feels like home — every time.' },
+            { icon: 'music', title: 'Live Entertainment', body: 'Friday and Saturday nights we go until 2 AM with live music that keeps the energy right and the good times going.' },
+            { icon: 'hand-coins', title: 'Commission-Free', body: 'Order direct and every dollar goes straight to us — no third-party fees eating into the food you love.' },
+          ].map(({ icon, title, body }) => (
+            <div key={title} style={{ background: 'var(--surface-card)', border: '1px solid var(--line)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+              <span style={{ color: 'var(--gold-500)', display: 'inline-flex' }}><Ic name={icon} size={28} /></span>
+              <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'var(--fs-lg)', color: 'var(--text-strong)' }}>{title}</h3>
+              <p style={{ margin: 0, fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', lineHeight: 'var(--lh-normal)', color: 'var(--text-muted)' }}>{body}</p>
+            </div>
+          ))}
+        </div>
+
+        <Divider />
+
+        {/* Stats */}
+        <div style={{ background: 'var(--smoke-900)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-8) var(--space-6)', display: 'flex', flexWrap: 'wrap', gap: 'var(--space-7)', justifyContent: 'space-around', textAlign: 'center' }}>
+          {[['40+', 'Plates & baskets'], ['Til 2a', 'Fri & Sat nights'], ['$0', 'Ordering fees'], ['436', 'Desiard Street']].map(([n, l]) => (
+            <div key={l}>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'var(--fs-display-md)', color: 'var(--gold-400)', lineHeight: 1 }}>{n}</div>
+              <div style={{ fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-xs)', textTransform: 'uppercase', letterSpacing: 'var(--ls-wide)', color: 'var(--text-on-dark-muted)', marginTop: '0.4rem' }}>{l}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div style={{ display: 'flex', gap: 'var(--space-3)', justifyContent: 'center', flexWrap: 'wrap', marginTop: 'var(--space-2)' }}>
+          <Button variant="primary" size="lg" iconRight={<Ic name="arrow-right" size={18} />} onClick={() => onNav('menu')}>Order Pickup</Button>
+          <Button variant="dark" size="lg" onClick={() => onNav('reserve')}>Reserve a Table</Button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ============================================================
+// APP ROOT
+// ============================================================
+function App() {
+  const [screen, setScreen] = React.useState('home');
+  const [cart, setCart] = React.useState({});
+
+  const addToCart = (item, delta = 1) => {
+    setCart((c) => {
+      const next = { ...c };
+      const cur = next[item.name] || { name: item.name, price: item.price, qty: 0 };
+      const qty = cur.qty + delta;
+      if (qty <= 0) { delete next[item.name]; }
+      else { next[item.name] = { ...cur, qty }; }
+      return next;
+    });
+  };
+
+  const cartCount = Object.values(cart).reduce((s, c) => s + c.qty, 0);
+  const nav = (s) => { setScreen(s); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+  return (
+    <div>
+      <Header active={screen} onNav={nav} cartCount={cartCount} />
+      {screen === 'home'    && <Home onNav={nav} onAdd={addToCart} />}
+      {screen === 'menu'    && <MenuPage cart={cart} onAdd={addToCart} />}
+      {screen === 'reserve' && <Reservations />}
+      {screen === 'story'   && <OurStory onNav={nav} />}
+      <Footer />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

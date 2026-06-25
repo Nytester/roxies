@@ -1,0 +1,43 @@
+:root {
+  --font-display: 'Playfair Display', 'Times New Roman', serif;
+  --font-script: 'Yellowtail', 'Brush Script MT', cursive;
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: var(--font-sans);
+
+  --w-light: 300;
+  --w-regular: 400;
+  --w-medium: 500;
+  --w-semibold: 600;
+  --w-bold: 700;
+  --w-extrabold: 800;
+  --w-black: 900;
+
+  --fs-display-xl: clamp(3.5rem, 7vw, 6.5rem);
+  --fs-display-lg: clamp(2.75rem, 5vw, 4.5rem);
+  --fs-display-md: clamp(2rem, 3.5vw, 3rem);
+  --fs-display-sm: clamp(1.6rem, 2.5vw, 2.25rem);
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 1.75rem;
+
+  --fs-script: clamp(2rem, 4vw, 3.5rem);
+
+  --lh-tight: 1.02;
+  --lh-snug: 1.18;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.65;
+
+  --ls-tight: -0.02em;
+  --ls-normal: 0;
+  --ls-wide: 0.04em;
+  --ls-wider: 0.16em;
+  --ls-widest: 0.28em;
+
+  --overline-size: var(--fs-xs);
+  --overline-weight: var(--w-bold);
+  --overline-tracking: var(--ls-wider);
+}
