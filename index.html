@@ -153,6 +153,19 @@ const DATA = {
 };
 
 // ============================================================
+// RESPONSIVE HOOK
+// ============================================================
+function useIsMobile(breakpoint = 768) {
+  const [mobile, setMobile] = React.useState(() => window.innerWidth < breakpoint);
+  React.useEffect(() => {
+    const fn = () => setMobile(window.innerWidth < breakpoint);
+    window.addEventListener('resize', fn);
+    return () => window.removeEventListener('resize', fn);
+  }, [breakpoint]);
+  return mobile;
+}
+
+// ============================================================
 // LUCIDE ICON HELPER
 // ============================================================
 function Ic({ name, size = 18, color }) {
@@ -585,12 +598,15 @@ function MenuItemCard({ name, description, price, pricePlus = false, badges = []
 // HEADER
 // ============================================================
 function Header({ active, onNav, cartCount = 0 }) {
+  const isMobile = useIsMobile();
+  const [menuOpen, setMenuOpen] = React.useState(false);
   const links = [
     { id: 'home', label: 'Home' },
     { id: 'menu', label: 'Menu' },
     { id: 'reserve', label: 'Reserve' },
     { id: 'story', label: 'Our Story' },
   ];
+  const handleNav = (id) => { onNav(id); setMenuOpen(false); };
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 20,
@@ -602,23 +618,28 @@ function Header({ active, onNav, cartCount = 0 }) {
         padding: '0.85rem var(--gutter)',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem',
       }}>
-        <button onClick={() => onNav('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+        <button onClick={() => handleNav('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <Wordmark size="sm" layout="inline" onDark />
         </button>
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '1.8rem' }}>
-          {links.map((l) => (
-            <button key={l.id} onClick={() => onNav(l.id)} style={{
-              background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0',
-              fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', fontWeight: 700,
-              letterSpacing: 'var(--ls-wide)', textTransform: 'uppercase',
-              color: active === l.id ? 'var(--gold-400)' : 'var(--buttermilk-50)',
-              borderBottom: active === l.id ? '2px solid var(--gold-400)' : '2px solid transparent',
-              transition: 'color var(--dur-fast) var(--ease-out)',
-            }}>
-              {l.label}
-            </button>
-          ))}
-        </nav>
+
+        {/* Desktop nav */}
+        {!isMobile && (
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '1.8rem' }}>
+            {links.map((l) => (
+              <button key={l.id} onClick={() => handleNav(l.id)} style={{
+                background: 'none', border: 'none', cursor: 'pointer', padding: '0.3rem 0',
+                fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', fontWeight: 700,
+                letterSpacing: 'var(--ls-wide)', textTransform: 'uppercase',
+                color: active === l.id ? 'var(--gold-400)' : 'var(--buttermilk-50)',
+                borderBottom: active === l.id ? '2px solid var(--gold-400)' : '2px solid transparent',
+                transition: 'color var(--dur-fast) var(--ease-out)',
+              }}>
+                {l.label}
+              </button>
+            ))}
+          </nav>
+        )}
+
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
           <IconButton ariaLabel="Cart" variant="solid" onClick={() => onNav('menu')}>
             <Ic name="shopping-bag" size={18} />
@@ -630,8 +651,34 @@ function Header({ active, onNav, cartCount = 0 }) {
               minWidth: 18, fontVariantNumeric: 'tabular-nums',
             }}>{cartCount}</span>
           )}
+          {/* Hamburger — mobile only */}
+          {isMobile && (
+            <IconButton ariaLabel={menuOpen ? 'Close menu' : 'Open menu'} variant="ghost" onClick={() => setMenuOpen((o) => !o)}>
+              <Ic name={menuOpen ? 'x' : 'menu'} size={22} color="var(--buttermilk-50)" />
+            </IconButton>
+          )}
         </div>
       </div>
+
+      {/* Mobile dropdown */}
+      {isMobile && menuOpen && (
+        <nav style={{
+          background: 'rgba(20,16,12,0.98)', borderTop: '1px solid var(--line-on-dark)',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          {links.map((l) => (
+            <button key={l.id} onClick={() => handleNav(l.id)} style={{
+              background: 'none', border: 'none', borderBottom: '1px solid var(--line-on-dark)',
+              cursor: 'pointer', padding: '1rem var(--gutter)', textAlign: 'left',
+              fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-base)', fontWeight: 700,
+              letterSpacing: 'var(--ls-wide)', textTransform: 'uppercase',
+              color: active === l.id ? 'var(--gold-400)' : 'var(--buttermilk-50)',
+            }}>
+              {l.label}
+            </button>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }
@@ -857,6 +904,7 @@ function Home({ onNav, onAdd }) {
 // ============================================================
 function MenuPage({ cart, onAdd }) {
   const D = DATA;
+  const isMobile = useIsMobile();
   const [active, setActive] = React.useState(D.categories[0].id);
   const cartItems = Object.values(cart);
   const subtotal = cartItems.reduce((s, c) => s + parseFloat(c.price) * c.qty, 0);
@@ -886,7 +934,7 @@ function MenuPage({ cart, onAdd }) {
       </div>
 
       {/* Body: menu + order rail */}
-      <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: 'var(--section-y) var(--gutter)', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: 'var(--space-8)', alignItems: 'start' }}>
+      <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: 'var(--section-y) var(--gutter)', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) 320px', gap: 'var(--space-8)', alignItems: 'start' }}>
         <div>
           {D.categories.map((c) => (
             <section key={c.id} id={'cat-' + c.id} style={{ marginBottom: 'var(--space-8)' }}>
@@ -911,7 +959,7 @@ function MenuPage({ cart, onAdd }) {
         </div>
 
         {/* Order summary */}
-        <aside style={{ position: 'sticky', top: 130, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--line)', boxShadow: 'var(--shadow-md)', overflow: 'hidden' }}>
+        <aside style={{ position: isMobile ? 'static' : 'sticky', top: 130, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--line)', boxShadow: 'var(--shadow-md)', overflow: 'hidden' }}>
           <div style={{ background: 'var(--smoke-900)', padding: 'var(--space-4) var(--space-5)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <Ic name="shopping-bag" size={18} color="var(--gold-400)" />
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'var(--fs-md)', color: 'var(--buttermilk-50)' }}>Your Order</span>
@@ -958,6 +1006,7 @@ function MenuPage({ cart, onAdd }) {
 // RESERVATIONS
 // ============================================================
 function Reservations() {
+  const isMobile = useIsMobile();
   const [party, setParty] = React.useState(4);
   const [time, setTime] = React.useState('7:30 PM');
   const [done, setDone] = React.useState(false);
@@ -996,7 +1045,7 @@ function Reservations() {
                   ))}
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 'var(--space-4)' }}>
                 <Input label="Date" defaultValue="Today, Jun 16" icon={<Ic name="calendar" size={16} />} />
                 <Input label="Name" placeholder="Your name" icon={<Ic name="user" size={16} />} />
               </div>
@@ -1008,7 +1057,7 @@ function Reservations() {
                   ))}
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 'var(--space-4)' }}>
                 <Input label="Phone" placeholder="(318) 555-0142" icon={<Ic name="phone" size={16} />} />
                 <Input label="Email" placeholder="you@email.com" icon={<Ic name="mail" size={16} />} />
               </div>
